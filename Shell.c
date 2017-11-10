@@ -312,6 +312,101 @@ int lsh_output( char **args )
 	
 	close(infp); // Close the input file
 	close(outfp); // Close the output files	
+
+	/*
+	KARLA'S PART, NOT FINISHED
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <stdbool.h>
+//#include <sys/types.h>
+//#include <unistd.h>
+//#include <string.h>
+
+//test, this is coming from part 1
+
+//char *line = "ls << out.txt";
+
+//char **tokens = malloc(64 * sizeof(char*));
+
+// set up pipes
+
+	pid_t pid;
+	pid = fork();
+	//makes 2 pipes, each has two fds
+	int fd1[2];
+	pipe(fd1);
+
+
+//check if line has < > symbols
+
+	//declare variables
+	bool check = false, append = false;
+	int i, j, size, counter;
+	char token, type;
+	size = 3;
+	counter = size;
+	//loop through tokens until find tokens or ends
+	while(check != true || counter > 0){
+		for(i = 0; i < size; i++){
+			for(j = 0; j < size; j++){
+				printf("%c ", tokens[i][j]);
+				//if token is found
+				if(tokens[i][j] == '<' || '>'){
+					check = true;
+					type = tokens[i][j];
+					//if double token therefore append symbol
+					if(tokens[i][j+1] == tokens[i][j]){
+						append = true;
+
+					}
+				}
+			}
+		}
+	counter--;
+	}
+//for testing
+printf("bool1: %d bool2: %d", check, append);
+
+//if so, see if it is input, output, in-append or out-append
+	//we can execute because there's redirection
+	if(check == true){
+		if(type == '<'){
+			if(append == true){
+				//execute <<
+				if(pid == 0){
+					//dup2(infile, 0);
+				}
+			}
+			else{
+				//execute <
+				if(pid == 0){
+					dup2(fd1[0], 0);
+					execvp(tokens[0], tokens);
+				}
+			}
+		}
+		else if(type == '>'){
+			if(append == true){
+				//execute >>
+				if(pid == 0){
+					//dup
+				}
+			}
+			else{
+				// execute >
+				if(pid == 0){
+					dup2(fd1[1], 1);
+					execvp(tokens[0], tokens);
+				}
+			}
+		}
+	}
+
+	//double redirection
+	//dup2(fd1[0],
+
+	
+	*/
 	
 	
 }
