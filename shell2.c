@@ -485,9 +485,9 @@ int lsh_cd ( char **args )
 //(TJ)Using the '<' as a call to look for what is better redirected  
 int lsh_output( char **args )
 {
-	int infp, outfp; //(TJ)The input and output files... descriptor variables?
+	int outfp;// infp; //(TJ)The input and output files... descriptor variables?
 	int i; //(TJ) For the 'for' loop
-	int redir; // (TJ) tells you where your redirect operator is
+	//int redir; // (TJ) tells you where your redirect operator is
 	
 	
 	/*
@@ -511,11 +511,11 @@ int lsh_output( char **args )
 		if (strcmp(args[i], ">") == 0 ) 
 		{
 			//(TJ) Opening the input/output files that are associated with the the redirection
-			infp = open(args[i--], O_RDONLY); // looks at thing infront of ">" (GOING TO HAVE A PROBLEM WHEN IT COMES TO "cat text.txt > text2.txt" )
+			//infp = open(args[i--], O_RDONLY); // looks at thing infront of ">" (GOING TO HAVE A PROBLEM WHEN IT COMES TO "cat text.txt > text2.txt" )
 			outfp = open(args[i++], O_WRONLY | O_TRUNC | O_CREAT );	// Looks at thing behind the ">"
 			
 			// (TJ)Replaces the Standard input "0", with the input file "infp"
-			dup2(infp, 0);
+			//dup2(infp, 0);
 	
 			// (TJ) Replaces the Standard output with the output file "outfp"
 			dup2(outfp, 1);
@@ -525,7 +525,7 @@ int lsh_output( char **args )
 	}
 	
 	
-	close(infp); // Close the input file
+	//close(infp); // Close the input file
 	close(outfp); // Close the output files	
 	
 	//(TJ) Just something to return
@@ -534,7 +534,32 @@ int lsh_output( char **args )
 
 //
 int lsh_input( char **args )
-{}
+{
+int infp, outfp; //input gile
+	int i; //iterator
+	
+	//Loops as many times as things tokened in cmd line
+	for (i = 0; i < 3; i++)
+	{
+		//Checks to see if ">" comes up and if so, Do the input redirect
+		if (strcmp(args[i], ">") == 0 ) 
+		{
+			//Opening the input file
+			infp = open(args[i--], O_RDONLY); // looks at thing infront of ">" (GOING TO HAVE A PROBLEM WHEN IT COMES TO "cat text.txt > text2.txt" )
+			
+			// (TJ)Replaces the Standard input "0", with the input file "infp"
+			dup2(infp, 0);
+
+		}
+		
+	}
+	
+	
+	close(infp); // Close the input file
+	
+	return 1;
+
+}
 
 int lsh_path( char **args )
 {
@@ -773,7 +798,7 @@ int lsh_execute( char **args )
 						//(TJ) If you find a out redirections, call lsh_input
 						else if (strcmp(args[j], "<") == 0 )
 						{
-							lsh_launch( args );
+							lsh_input( args );
 						}
 						//(TJ) If you find a out redirections, call lsh_append
 						else if (strcmp(args[j], ">>") == 0 )
